@@ -13,6 +13,4 @@ const pool = new Pool({
   database: 'perntodo',
 })
 
-const { Pool } = require('pg')
-
 export default pool
