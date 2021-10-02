@@ -14,7 +14,7 @@ const pool = new Pool({
 
   user: 'postgres',
   password: process.env.DB_PASSWORD,
-  host: '127.0.0.1',
+  host: '5432',
   port: process.env.port,
   database: 'perntodo',
 })
