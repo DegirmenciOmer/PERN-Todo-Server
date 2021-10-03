@@ -1,6 +1,20 @@
 CREATE DATABASE perntodo;
 
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+
+$$ LANGUAGE plpgsql;
+
 CREATE TABLE todo(
-  todo_id SERIAL PRIMARY KEY,
-  description VARCHAR(255), is_done BOOLEAN DEFAULT FALSE;
+  todo_id SERIAL PRIMARY KEY, 
+  description VARCHAR(255), is_done BOOLEAN DEFAULT FALSE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 );
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON todo
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
