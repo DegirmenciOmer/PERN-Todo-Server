@@ -84,10 +84,9 @@ app.put('/todos/:id', async (req, res) => {
 })
 
 //mark a todo as done
-app.put('/todos/:id', async (req, res) => {
+app.put('/todos/toggle/:id', async (req, res) => {
   try {
     const { id } = req.params
-
     await pool.query('UPDATE todo SET is_done = NOT is_done WHERE id = $1', [
       id,
     ])
