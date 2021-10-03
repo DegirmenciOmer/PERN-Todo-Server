@@ -71,10 +71,10 @@ app.put('/todos/:id', async (req, res) => {
     const { id } = req.params
     const { description } = req.body
 
-    await pool.query('UPDATE todo SET description=$1 WHERE todo_id = $2', [
-      description,
-      id,
-    ])
+    const updateTodo = await pool.query(
+      'UPDATE todo SET description=$1 WHERE todo_id = $2',
+      [description, id]
+    )
 
     res.json('Todo was updated.')
   } catch (error) {
@@ -88,7 +88,7 @@ app.put('/todos/toggle/:id', async (req, res) => {
   try {
     const { id } = req.params
     await pool.query(
-      'UPDATE todo SET is_done = NOT(COALESCE(is_done, FALSE)) WHERE id = $1',
+      'UPDATE todo SET is_done = NOT(COALESCE(is_done, FALSE)) WHERE todo_id = $1',
       [id]
     )
   } catch (error) {
@@ -102,7 +102,9 @@ app.delete('/todos/:id', async (req, res) => {
   try {
     const { id } = req.params
 
-    await pool.query('DELETE FROM todo WHERE todo_id = $1', [id])
+    const deleteTodo = await pool.query('DELETE FROM todo WHERE todo_id = $1', [
+      id,
+    ])
 
     res.json('Todo was deleted.')
   } catch (error) {
