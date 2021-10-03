@@ -87,9 +87,10 @@ app.put('/todos/:id', async (req, res) => {
 app.put('/todos/toggle/:id', async (req, res) => {
   try {
     const { id } = req.params
-    await pool.query('UPDATE todo SET is_done = NOT is_done WHERE id = $1', [
-      id,
-    ])
+    await pool.query(
+      'UPDATE todo SET is_done = NOT(COALESCE(is_done, FALSE)) WHERE id = $1',
+      [id]
+    )
   } catch (error) {
     console.error(error.message)
     res.json(error.message)
