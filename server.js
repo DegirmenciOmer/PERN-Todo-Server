@@ -1,7 +1,6 @@
 import express from 'express'
 import pool from './db.js'
 import cors from 'cors'
-import asyncHandler from 'express-async-handler'
 import { v4 as uuidV4 } from 'uuid'
 
 const app = express()
@@ -115,22 +114,6 @@ app.get('/todos/:id', async (req, res) => {
     res.json(error.message)
   }
 })
-
-//get one todo
-// app.get('/todos/:id', async (req, res) => {
-//   try {
-//     const { id } = req.params
-//     const selectedTodo = await pool.query(
-//       'SELECT * FROM todo WHERE todo_id = $1',
-//       [id]
-//     )
-
-//     res.json(selectedTodo.rows[0])
-//   } catch (error) {
-//     console.error(error.message)
-//     res.json(error.message)
-//   }
-// })
 
 //update a todo
 app.put('/todos/:id', async (req, res) => {
