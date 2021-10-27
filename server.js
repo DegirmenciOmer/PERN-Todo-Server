@@ -7,7 +7,11 @@ const app = express()
 app.use(
   cors({
     cors: true,
-    origins: ['http://localhost:3000', 'https://pern-todo-omer.netlify.app'],
+    origins: [
+      'http://localhost:3000',
+      'https://pern-todo-omer.netlify.app',
+      'https://pern-todo-omer.netlify.app/home',
+    ],
   })
 )
 
@@ -142,9 +146,7 @@ app.delete('/todos/:id', async (req, res) => {
   try {
     const { id } = req.params
 
-    const deleteTodo = await pool.query('DELETE FROM todo WHERE todo_id = $1', [
-      id,
-    ])
+    await pool.query('DELETE FROM todo WHERE todo_id = $1', [id])
 
     res.json('Todo was deleted.')
   } catch (error) {
