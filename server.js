@@ -7,7 +7,7 @@ const app = express()
 app.use(
   cors({
     cors: true,
-    origins: ['http://localhost:3000'],
+    origins: ['http://localhost:3000', 'https://pern-todo-omer.netlify.app'],
   })
 )
 
@@ -19,7 +19,6 @@ export const PORT = process.env.PORT || 5000
 app.post('/users/register', async (req, res) => {
   try {
     const id = uuidV4()
-    console.log({ id })
     const { name, email, password } = req.body
     res.setHeader('Content-Type', 'application/json')
 
@@ -27,7 +26,6 @@ app.post('/users/register', async (req, res) => {
       'SELECT * FROM users WHERE email = $1',
       [email]
     )
-    console.log({ alreadyExists })
     if (alreadyExists) {
       res.sendStatus(400)
       throw new Error('This email adress already exists')
@@ -50,13 +48,10 @@ app.post('/users/login', async (req, res) => {
     const { email, password } = req.body
     res.setHeader('Content-Type', 'application/json')
 
-    console.log({ email, password })
-
     const user = await pool.query('SELECT * FROM users WHERE email = $1', [
       email,
     ])
     const selectedUser = user.rows[0]
-    console.log({ selectedUser, user })
     if (!selectedUser) {
       res.status(404)
       throw new Error('Please sign up first')
@@ -82,13 +77,11 @@ app.post('/todos/', async (req, res) => {
       throw new Error('Too long text')
     }
 
-    console.log(req.body.user_id)
     const newTodo = await pool.query(
       'INSERT INTO todo (description, user_id) VALUES($1, $2) RETURNING *',
       [description, user_id]
     )
 
-    console.log(newTodo.rows[0])
     res.json(newTodo.rows[0])
   } catch (err) {
     console.error(err.message)
@@ -100,13 +93,10 @@ app.post('/todos/', async (req, res) => {
 app.get('/todos/:id', async (req, res) => {
   try {
     const { id } = req.params
-    console.log({ id })
     const allTodos = await pool.query(
       'SELECT * FROM todo WHERE user_id = $1 ORDER BY created_at DESC ',
       [id]
     )
-
-    console.log(allTodos.rows)
 
     res.json(allTodos.rows)
   } catch (error) {
